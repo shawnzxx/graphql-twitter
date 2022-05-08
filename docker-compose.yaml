@@ -1,0 +1,20 @@
+version: '3.7'
+services:
+  db-api:
+    container_name: db-graphql-twitter-local
+    image: postgres:12-alpine
+    ports:
+      - '5432:5432'
+    restart: always
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready']
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - my_dbdata:/var/lib/postgresql/data
+volumes:
+  my_dbdata:
