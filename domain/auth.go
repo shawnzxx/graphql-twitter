@@ -14,8 +14,10 @@ type AuthService struct {
 	UserRepo graphql_twitter.UserRepo
 }
 
-func NewAuthService() *AuthService {
-	return &AuthService{}
+func NewAuthService(ur graphql_twitter.UserRepo) *AuthService {
+	return &AuthService{
+		UserRepo: ur,
+	}
 }
 
 func (as *AuthService) Register(ctx context.Context, input graphql_twitter.RegisterInput) (graphql_twitter.AuthResponse, error) {

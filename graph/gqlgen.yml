@@ -1,0 +1,2 @@
+# refer https://gqlgen.com/config/
+skip_validation: true

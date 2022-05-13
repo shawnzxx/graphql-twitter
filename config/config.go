@@ -1,8 +1,11 @@
 package config
 
 import (
-	"github.com/joho/godotenv"
+	"log"
 	"os"
+	"regexp"
+
+	"github.com/joho/godotenv"
 )
 
 type database struct {
@@ -13,14 +16,23 @@ type Config struct {
 	Database database
 }
 
-//New create a new config which have settings for application to use, like DATABASE_URL
-func New() *Config {
-	godotenv.Load()
+func LoadEnv(fileName string) {
+	re := regexp.MustCompile(`^(.*` + "twitter" + `)`)
+	cwd, _ := os.Getwd()
+	rootPath := re.Find([]byte(cwd))
 
-	config := &Config{
+	log.Printf("rootPath is: %s", rootPath)
+
+	err := godotenv.Load(string(rootPath) + `/` + fileName)
+	if err != nil {
+		godotenv.Load()
+	}
+}
+
+func New() *Config {
+	return &Config{
 		Database: database{
 			URL: os.Getenv("DATABASE_URL"),
 		},
 	}
-	return config
 }
