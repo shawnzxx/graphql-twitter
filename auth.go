@@ -15,8 +15,8 @@ var (
 var emailRegexp = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 
 type AuthService interface {
-	Login(ctx context.Context, input LoginInput) (AuthResponse, error)
 	Register(ctx context.Context, input RegisterInput) (AuthResponse, error)
+	Login(ctx context.Context, input LoginInput) (AuthResponse, error)
 }
 
 type AuthResponse struct {
@@ -31,7 +31,7 @@ type RegisterInput struct {
 	ConfirmPassword string
 }
 
-//Sanitize will update the RegisterInput so we need pointer
+// Sanitize will update the RegisterInput so we need pointer
 func (in *RegisterInput) Sanitize() {
 	in.Email = strings.TrimSpace(in.Email)
 	in.Email = strings.ToLower(in.Email)
@@ -43,7 +43,7 @@ func (in *RegisterInput) Sanitize() {
 
 }
 
-//Validate no need to change RegisterInput so we do not need pointer
+// Validate no need to change RegisterInput so we do not need pointer
 func (in RegisterInput) Validate() error {
 	if len(in.Username) < UsernameMinLength {
 		return fmt.Errorf("%w: username not long enough, (%d) characters as least", ErrValidation, UsernameMinLength)
@@ -69,13 +69,13 @@ type LoginInput struct {
 	Password string
 }
 
-//Sanitize will update the RegisterInput so we need pointer
+// Sanitize will update the RegisterInput so we need pointer
 func (in *LoginInput) Sanitize() {
 	in.Email = strings.TrimSpace(in.Email)
 	in.Email = strings.ToLower(in.Email)
 }
 
-//Validate no need to change RegisterInput so we do not need pointer
+// Validate no need to change RegisterInput so we do not need pointer
 func (in LoginInput) Validate() error {
 	if !emailRegexp.MatchString(in.Email) {
 		return fmt.Errorf("%w: email is not valid", ErrValidation)

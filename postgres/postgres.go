@@ -20,8 +20,8 @@ type DB struct {
 	conf *config.Config
 }
 
-//New init a db poll and return db instance.
-//db have functions like Ping, Close, Migrate
+// New init a db poll and return db instance.
+// db have functions like Ping, Close, Migrate etc
 func New(ctx context.Context, conf *config.Config) *DB {
 	dbConf, err := pgxpool.ParseConfig(conf.Database.URL)
 	if err != nil {
@@ -50,9 +50,9 @@ func (db *DB) Close() {
 	db.Pool.Close()
 }
 
-//Migrate do migration process
+// Migrate do migration process
 func (db *DB) Migrate() error {
-	//find current file location
+	// find current file location
 	_, b, _, _ := runtime.Caller(0)
 
 	migrationPath := fmt.Sprintf("file:///%s/migrations", path.Dir(b))
@@ -62,14 +62,43 @@ func (db *DB) Migrate() error {
 		return fmt.Errorf("error create the migrate instance: %v", err)
 	}
 
-	//we catch err is not nil and err is not equal to ErrNoChange error
-	//since we will do migration for every single deployment
-	//we do not want to capture ErrNoChange err
+	// we catch err is not nil and err is not equal to ErrNoChange error
+	// since we will do migration for every single deployment
+	// we do not want to capture ErrNoChange err
 	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
 		return fmt.Errorf("error migrate up: %v", err)
 	}
 
 	log.Println("migration done")
+
+	return nil
+}
+
+func (db *DB) Drop() error {
+	_, b, _, _ := runtime.Caller(0)
+
+	migrationPath := fmt.Sprintf("file:///%s/migrations", path.Dir(b))
+
+	m, err := migrate.New(migrationPath, db.conf.Database.URL)
+	if err != nil {
+		return fmt.Errorf("error create the migrate instance: %v", err)
+	}
+
+	if err := m.Drop(); err != nil {
+		return fmt.Errorf("error drop: %v", err)
+	}
+
+	log.Println("migration drop")
+
+	return nil
+}
+
+func (db *DB) Truncate(ctx context.Context) error {
+	if _, err := db.Pool.Exec(ctx, `
+		DELETE FROM users;
+	`); err != nil {
+		return fmt.Errorf("error truncate: %v", err)
+	}
 
 	return nil
 }

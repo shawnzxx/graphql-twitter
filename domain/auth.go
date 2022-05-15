@@ -27,36 +27,36 @@ func (as *AuthService) Register(ctx context.Context, input graphql_twitter.Regis
 		return graphql_twitter.AuthResponse{}, err
 	}
 
-	//check if username is already taken
+	// check if username is already taken
 	if _, err := as.UserRepo.GetByUsername(ctx, input.Username); !errors.Is(err, graphql_twitter.ErrNotFound) {
 		return graphql_twitter.AuthResponse{}, graphql_twitter.ErrUsernameTaken
 	}
 
-	//check if email is already taken
+	// check if email is already taken
 	if _, err := as.UserRepo.GetByEmail(ctx, input.Email); !errors.Is(err, graphql_twitter.ErrNotFound) {
 		return graphql_twitter.AuthResponse{}, graphql_twitter.ErrEmailTaken
 	}
 
-	//initial new user
+	// initial new user
 	user := graphql_twitter.User{
 		Username: input.Username,
 		Email:    input.Email,
 	}
 
-	//hash the password
+	// hash the password
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), passwordCost)
 	if err != nil {
 		return graphql_twitter.AuthResponse{}, fmt.Errorf("error hashing password %v", err)
 	}
 	user.Password = string(hashPassword)
 
-	//create the user
-	user, err = as.UserRepo.CreateUser(ctx, user)
+	// create the user
+	user, err = as.UserRepo.Create(ctx, user)
 	if err != nil {
 		return graphql_twitter.AuthResponse{}, fmt.Errorf("error creating user: %v", err)
 	}
 
-	//return accessToken and user
+	// return accessToken and user
 	return graphql_twitter.AuthResponse{
 		AccessToken: "JWT",
 		User:        user,

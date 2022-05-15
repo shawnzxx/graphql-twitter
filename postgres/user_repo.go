@@ -12,7 +12,13 @@ type UserRepo struct {
 	DB *DB
 }
 
-func (ur UserRepo) CreateUser(ctx context.Context, user graphql_twitter.User) (graphql_twitter.User, error) {
+func NewUserRepo(db *DB) *UserRepo {
+	return &UserRepo{
+		DB: db,
+	}
+}
+
+func (ur UserRepo) Create(ctx context.Context, user graphql_twitter.User) (graphql_twitter.User, error) {
 	tx, err := ur.DB.Pool.Begin(ctx)
 	if err != nil {
 		return graphql_twitter.User{}, fmt.Errorf("error starting transaction %v", err)
