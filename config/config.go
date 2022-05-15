@@ -17,9 +17,13 @@ type Config struct {
 }
 
 func LoadEnv(fileName string) {
-	re := regexp.MustCompile(`^(.*` + "twitter" + `)`)
+	regx := regexp.MustCompile(`^(.*` + "twitter" + `)`)
+
+	// get project level root directory
+	// Users/shawnzhang/projects/poc/graphql-twitter
 	cwd, _ := os.Getwd()
-	rootPath := re.Find([]byte(cwd))
+
+	rootPath := regx.Find([]byte(cwd))
 
 	log.Printf("rootPath is: %s", rootPath)
 

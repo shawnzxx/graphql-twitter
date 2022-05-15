@@ -5,7 +5,7 @@ import (
 	graphql_twitter "github.com/shawnzxx/graphql-twitter"
 )
 
-//mapUser: map domain user into graph user
+// mapUser: map domain user into graph user
 func mapUser(u graphql_twitter.User) *User {
 	return &User{
 		ID:        u.ID,

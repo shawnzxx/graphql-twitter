@@ -35,6 +35,7 @@ func New(ctx context.Context, conf *config.Config) *DB {
 
 	db := &DB{Pool: pool, conf: conf}
 
+	// after create new db pool test ping also
 	db.Ping(ctx)
 
 	return db
@@ -93,7 +94,7 @@ func (db *DB) Drop() error {
 	return nil
 }
 
-func (db *DB) Truncate(ctx context.Context) error {
+func (db *DB) TruncateUserTable(ctx context.Context) error {
 	if _, err := db.Pool.Exec(ctx, `
 		DELETE FROM users;
 	`); err != nil {

@@ -39,6 +39,12 @@ func main() {
 	router.Use(middleware.RedirectSlashes)
 	router.Use(middleware.Timeout(time.Second * 60))
 
+	// DI layers
+	//
+	// -> Graphql Handler depends on Service
+	// -> Service depends on Repository
+	// -> Repository depends on Database instance
+
 	// 1: inject db into Repos layer
 	userRepo := postgres.NewUserRepo(db)
 	// 2: inject db repo into Domain Service layer

@@ -36,11 +36,7 @@ func (in *RegisterInput) Sanitize() {
 	in.Email = strings.TrimSpace(in.Email)
 	in.Email = strings.ToLower(in.Email)
 
-	in.ConfirmPassword = strings.TrimSpace(in.ConfirmPassword)
-	in.ConfirmPassword = strings.ToLower(in.ConfirmPassword)
-
 	in.Username = strings.TrimSpace(in.Username)
-
 }
 
 // Validate no need to change RegisterInput so we do not need pointer
